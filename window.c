@@ -44,7 +44,7 @@ static struct {
 	{ XC_sb_left_arrow }, { XC_sb_right_arrow }
 };
 
-static GC gc;
+GC gc;
 
 static XftFont *font;
 static int fontheight;

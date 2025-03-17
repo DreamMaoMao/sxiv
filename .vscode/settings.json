@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "numbers": "c",
+        "chrono": "c",
+        "span": "c",
+        "sstream": "c",
+        "type_traits": "c"
+    }
+}

@@ -32,9 +32,44 @@
 #include <libexif/exif-data.h>
 void exif_auto_orientate(const fileinfo_t*);
 #endif
+
+#define LEN(a)         (sizeof(a) / sizeof(a)[0])
+
+#define TEXTWIDTH(win, text, len) \
+	win_draw_text(win, NULL, NULL, 0, 0, text, len, 0)
+
+int win_draw_text(win_t *win, XftDraw *d, const XftColor *color, int x, int y,
+                  char *text, int len, int w);
+
 Imlib_Image img_open(const fileinfo_t*);
+extern GC gc;
 
 static char *cache_dir;
+
+char *easymotion_label[] = {
+	"au", "ai", "ao", "ah", "aj", "ak", "al", "an",
+	"su", "si", "so", "sh", "sj", "sk", "sl", "sn",
+	"du", "di", "do", "dh", "dj", "dk", "dl", "dn",
+	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn",
+	"gu", "gi", "go", "gh", "gj", "gk", "gl", "gn",
+	"eu", "ei", "eo", "eh", "ej", "ek", "el", "en",
+	"ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn",
+	"cu", "ci", "co", "ch", "cj", "ck", "cl", "cn",
+	"wu", "wi", "wo", "wh", "wj", "wk", "wl", "wn",
+	"tu", "ti", "to", "th", "tj", "tk", "tl", "tn",
+	"vu", "vi", "vo", "vh", "vj", "vk", "vl", "vn",
+	"xu", "xi", "xo", "xh", "xj", "xk", "xl", "xn",
+	"bu", "bi", "bo", "bh", "bj", "bk", "bl", "bn",
+	"qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn",
+
+	"ap", "ay", "am", "sp", "sy", "sm", "dp", "dy",
+	"dm", "fp", "fy", "fm", "gp", "gy", "gm", "ep",
+	"ey", "em", "rp", "ry", "rm", "cp", "cy", "cm",
+	"wp", "wy", "wm", "tp", "ty", "tm", "vp", "vy",
+	"vm", "xp", "xy", "xm", "bp", "by", "bm", "qp",
+	"qy", "qm"
+};
+
 
 char* tns_cache_filepath(const char *filepath)
 {
@@ -446,10 +481,13 @@ void tns_render(tns_t *tns)
 		if (t->im != NULL) {
 			t->x = x + (thumb_sizes[tns->zl] - t->w) / 2;
 			t->y = y + (thumb_sizes[tns->zl] - t->h) / 2;
+			// TODO: this can add draw easymotion labels
 			imlib_context_set_image(t->im);
 			imlib_render_image_on_drawable_at_size(t->x, t->y, t->w, t->h);
 			if (tns->files[i].flags & FF_MARK)
 				tns_mark(tns, i, true);
+			if(tns->is_easymotion)
+				tns_draw_easymotion_label(tns,i);
 		} else {
 			tns->loadnext = MIN(tns->loadnext, i);
 		}
@@ -462,6 +500,42 @@ void tns_render(tns_t *tns)
 	}
 	tns->dirty = false;
 	tns_highlight(tns, *tns->sel, true);
+}
+
+void tns_draw_easymotion_label(tns_t *tns, int n)
+{
+	if (n >= 0 && n < LEN(easymotion_label) && n < *tns->cnt && tns->thumbs[n].im != NULL) {
+		win_t *win = tns->win;
+		thumb_t *t = &tns->thumbs[n];
+		XftDraw *d;
+		win_env_t *e;
+		char *label = easymotion_label[tns->use_label_count];
+		int len, tw;
+		e = &win->env;
+
+		if(t->y < win->y || t->y > win->y + win->h)
+			return;
+		d = XftDrawCreate(e->dpy, win->buf.pm, DefaultVisual(e->dpy, e->scr),
+						  DefaultColormap(e->dpy, e->scr));
+		len = strlen(label);
+		tw = TEXTWIDTH(win, label, len);
+		int x = t->x+t->w/2 - tw/2, y = t->y + t->h/2;
+
+		t->easymotion_label = easymotion_label[tns->use_label_count];
+		tns->use_label_count++;
+
+		XSetForeground(e->dpy, gc, win->bg.pixel);
+		XFillRectangle(e->dpy, win->buf.pm, gc, x-tw/2, y-1.2*tw, tw*2, tw*2);
+
+		char text1[] = {label[0], '\0'};
+		char text2[] = {label[1], '\0'};
+		if(tns->easymotion_first_keysym && XKeysymToString(tns->easymotion_first_keysym)[0] == label[0]) {
+			win_draw_text(win, d, &win->hl, x, y, text1, len/2, tw/2);
+		} else {
+			win_draw_text(win, d, &win->fg, x, y, text1, len/2, tw/2);
+		}
+		win_draw_text(win, d, &win->fg, x+tw/2, y, text2, len/2, tw/2);
+	}
 }
 
 void tns_mark(tns_t *tns, int n, bool mark)

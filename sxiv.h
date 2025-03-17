@@ -64,7 +64,7 @@ typedef enum {
 
 typedef enum {
 	MODE_IMAGE,
-	MODE_THUMB
+	MODE_THUMB,
 } appmode_t;
 
 typedef enum {
@@ -306,6 +306,7 @@ typedef struct {
 	int h;
 	int x;
 	int y;
+	char* easymotion_label;
 } thumb_t;
 
 struct tns {
@@ -328,6 +329,10 @@ struct tns {
 	int dim;
 
 	bool dirty;
+	bool is_easymotion;
+	KeySym easymotion_first_keysym;
+	KeySym easymotion_second_keysym;
+	unsigned int use_label_count;
 };
 
 void tns_clean_cache(tns_t*);
@@ -336,7 +341,9 @@ CLEANUP void tns_free(tns_t*);
 bool tns_load(tns_t*, int, bool, bool);
 void tns_unload(tns_t*, int);
 void tns_render(tns_t*);
+void tns_check_view(tns_t *tns, bool scrolled);
 void tns_mark(tns_t*, int, bool);
+void tns_draw_easymotion_label(tns_t*, int);
 void tns_highlight(tns_t*, int, bool);
 bool tns_move_selection(tns_t*, direction_t, int);
 bool tns_scroll(tns_t*, direction_t, bool);

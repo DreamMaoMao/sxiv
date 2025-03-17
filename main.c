@@ -48,6 +48,7 @@ void slideshow(void);
 void clear_resize(void);
 
 appmode_t mode;
+extern char* easymotion_label[];
 arl_t arl;
 img_t img;
 tns_t tns;
@@ -463,6 +464,57 @@ void clear_resize(void)
 	resized = false;
 }
 
+bool hit_easymotion_label(char* label,char* first_char_str,char* second_char_str) {
+	if(!label)
+		return false;
+
+    if (first_char_str[0] == label[0] && second_char_str[0] == label[1]) {
+        return true; // 匹配
+    } else {
+        return false; // 不匹配
+    }
+
+}
+
+bool check_hit_first_key(char* key) {
+	int i;
+	for(i = 0; i < tns.use_label_count; i++) {
+		if(*key == easymotion_label[i][0]) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void check_hit_thumb(void) {
+	int i;
+	thumb_t *t;
+	int old;
+    char* first_char_str = XKeysymToString(tns.easymotion_first_keysym);
+    char* second_char_str = XKeysymToString(tns.easymotion_second_keysym);
+
+	for (i = tns.first; i < tns.end; i++) {
+		t = &tns.thumbs[i];
+		if(hit_easymotion_label(t->easymotion_label,first_char_str,second_char_str)) {
+			tns.is_easymotion = false;
+			tns.use_label_count = 0;
+			tns.easymotion_first_keysym = 0;
+			tns.easymotion_second_keysym = 0;
+			old = *tns.sel;
+			*tns.sel = i;
+			tns.dirty = true;
+			tns_highlight(&tns, old, false);
+			tns_check_view(&tns, false);
+			tns_highlight(&tns, *tns.sel, true);
+			redraw();
+			return;
+		} 
+	}
+
+	tns.easymotion_second_keysym = 0;
+}
+
 Bool is_input_ev(Display *dpy, XEvent *ev, XPointer arg)
 {
 	return ev->type == ButtonPress || ev->type == KeyPress;
@@ -577,6 +629,34 @@ void on_keypress(XKeyEvent *kev)
 
 	XLookupString(kev, &key, 1, &ksym, NULL);
 
+	if(tns.is_easymotion) {
+
+		if(ksym == XK_Escape && MODMASK(kev->state) == 0){
+			tns.is_easymotion = false;
+			tns.use_label_count = 0;
+			tns.easymotion_first_keysym = 0;
+			tns.easymotion_second_keysym = 0;
+			tns.dirty = true;
+			redraw();
+			return;
+		}
+
+		if(tns.easymotion_first_keysym == 0 && check_hit_first_key(XKeysymToString(ksym))) {
+			tns.easymotion_first_keysym = ksym;
+			tns.dirty = true;
+			tns.use_label_count = 0;
+			redraw();
+			return;
+		} else if(tns.easymotion_first_keysym != 0 && tns.easymotion_second_keysym == 0 && XKeysymToString(ksym)) {
+			tns.easymotion_second_keysym = ksym;
+			check_hit_thumb();
+			return;
+		} else {
+			return;
+		}
+	}
+
+
 	if (kev->state & ShiftMask) {
 		kev->state &= ~ShiftMask;
 		XLookupString(kev, &dummy, 1, &shksym, NULL);
@@ -586,6 +666,7 @@ void on_keypress(XKeyEvent *kev)
 	}
 	if (IsModifierKey(ksym))
 		return;
+
 	if (ksym == XK_Escape && MODMASK(kev->state) == 0) {
 		extprefix = False;
 	} else if (extprefix) {

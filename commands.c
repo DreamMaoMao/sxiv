@@ -101,6 +101,17 @@ bool cg_switch_mode(arg_t _)
 	return true;
 }
 
+bool cg_enter_easymotion(arg_t _)
+{
+	if (mode == MODE_IMAGE)
+		return false;
+
+	tns.is_easymotion = true;
+	tns.dirty = true;
+	tns_render(&tns);
+	return true;
+}
+
 bool cg_toggle_fullscreen(arg_t _)
 {
 	win_toggle_fullscreen(&win);
