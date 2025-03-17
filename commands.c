@@ -52,6 +52,22 @@ extern int markidx;
 extern int prefix;
 extern bool extprefix;
 
+
+bool cg_jump_or_select_to_output(arg_t _)
+{
+	int i;
+
+	if (markcnt > 0) {
+		for (i = 0; i < filecnt; i++) {
+			if (files[i].flags & FF_MARK)
+				printf("select###%s\n", files[i].name);
+		}
+	} else {
+		printf("jump###%s\n", files[fileidx].name);
+	}
+	exit(EXIT_SUCCESS);
+}
+
 bool cg_quit(arg_t _)
 {
 	unsigned int i;

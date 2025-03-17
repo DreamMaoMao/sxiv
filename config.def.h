@@ -60,8 +60,9 @@ static const int THUMB_SIZE = 3;
 static const keymap_t keys[] = {
 	/* modifiers    key               function              argument */
 	{ 0,            XK_q,             g_quit,               None },
-	{ 0,            XK_Return,        g_switch_mode,        None },
-	{ 0,            XK_f,             g_toggle_fullscreen,  None },
+	{ 0,            XK_Return,        g_jump_or_select_to_output,      None },
+	{ 0,            XK_f,        	  g_switch_mode,        None },
+	// { 0,            XK_f,          g_toggle_fullscreen,  None },
 	{ 0,            XK_b,             g_toggle_bar,         None },
 	{ ControlMask,  XK_x,             g_prefix_external,    None },
 	{ 0,            XK_g,             g_first,              None },
@@ -80,7 +81,7 @@ static const keymap_t keys[] = {
 	{ 0,            XK_KP_Add,        g_zoom,               +1 },
 	{ 0,            XK_minus,         g_zoom,               -1 },
 	{ 0,            XK_KP_Subtract,   g_zoom,               -1 },
-	{ 0,            XK_m,             g_toggle_image_mark,  None },
+	{ 0,            XK_space,             g_toggle_image_mark,  None },
 	{ 0,            XK_M,             g_mark_range,         None },
 	{ ControlMask,  XK_m,             g_reverse_marks,      None },
 	{ ControlMask,  XK_u,             g_unmark_all,         None },

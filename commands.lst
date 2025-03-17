@@ -1,3 +1,4 @@
+G_CMD(jump_or_select_to_output)
 G_CMD(quit)
 G_CMD(switch_mode)
 G_CMD(toggle_fullscreen)
