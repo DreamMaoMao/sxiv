@@ -1,3 +1,15 @@
+
+
+
+https://github.com/user-attachments/assets/f189c5b2-54d0-4de1-a527-fdf4738ba4e6
+
+## key bind
+-  i : open easymotion
+-  esc: esc easymotion
+-  backspace: delete first input key
+
+
+
 ![sxiv](http://xyb3rt.github.io/sxiv/img/logo.png "sxiv")
 
 **Simple X Image Viewer**
