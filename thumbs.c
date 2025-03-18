@@ -475,7 +475,7 @@ void tns_render(tns_t *tns)
 	}
 	tns->r_first = tns->first;
 	tns->r_end = tns->end;
-
+	tns->use_label_count = 0; // if not do this, label will assign out of array
 	for (i = tns->first; i < tns->end; i++) {
 		t = &tns->thumbs[i];
 		if (t->im != NULL) {
