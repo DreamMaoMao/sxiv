@@ -123,7 +123,7 @@ void win_init(win_t *win)
 	fg = win_res(db, RES_CLASS ".foreground", "white");
 	hl = win_res(db, RES_CLASS ".highlight", "red");
 	lb = win_res(db, RES_CLASS ".label", "yellow");
-	bd = win_res(db, RES_CLASS ".label", "orange");
+	bd = win_res(db, RES_CLASS ".border", "orange");
 	win_alloc_color(e, bg, &win->bg);
 	win_alloc_color(e, fg, &win->fg);
 	win_alloc_color(e, hl, &win->hl);
