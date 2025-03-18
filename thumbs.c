@@ -481,7 +481,6 @@ void tns_render(tns_t *tns)
 		if (t->im != NULL) {
 			t->x = x + (thumb_sizes[tns->zl] - t->w) / 2;
 			t->y = y + (thumb_sizes[tns->zl] - t->h) / 2;
-			// TODO: this can add draw easymotion labels
 			imlib_context_set_image(t->im);
 			imlib_render_image_on_drawable_at_size(t->x, t->y, t->w, t->h);
 			if (tns->files[i].flags & FF_MARK)
@@ -513,7 +512,7 @@ void tns_draw_easymotion_label(tns_t *tns, int n)
 		int len, tw;
 		e = &win->env;
 
-		if(t->y + t->h < win->y || t->y > win->y + win->h)
+		if(t->y  < 0 || t->y > win->h)
 			return;
 		d = XftDrawCreate(e->dpy, win->buf.pm, DefaultVisual(e->dpy, e->scr),
 						  DefaultColormap(e->dpy, e->scr));
