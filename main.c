@@ -631,6 +631,14 @@ void on_keypress(XKeyEvent *kev)
 
 	if(tns.is_easymotion) {
 
+		if(ksym == XK_BackSpace && MODMASK(kev->state) == 0){
+			tns.use_label_count = 0;
+			tns.easymotion_first_keysym = 0;
+			tns.dirty = true;
+			redraw();
+			return;
+		}
+
 		if(ksym == XK_Escape && MODMASK(kev->state) == 0){
 			tns.is_easymotion = false;
 			tns.use_label_count = 0;
