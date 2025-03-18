@@ -586,30 +586,16 @@ bool tns_move_selection(tns_t *tns, direction_t dir, int cnt)
 		case DIR_UP:
 			*tns->sel = MAX(*tns->sel - cnt * tns->cols, *tns->sel % tns->cols);
 			break;
-		case DIR_UP3:
-			*tns->sel = MAX(*tns->sel - (cnt+3) * tns->cols, *tns->sel % tns->cols);
-			break;
 		case DIR_DOWN:
 			max = tns->cols * ((*tns->cnt - 1) / tns->cols) +
 			      MIN((*tns->cnt - 1) % tns->cols, *tns->sel % tns->cols);
 			*tns->sel = MIN(*tns->sel + cnt * tns->cols, max);
 			break;
-		case DIR_DOWN3:
-			max = tns->cols * ((*tns->cnt - 1) / tns->cols) +
-			      MIN((*tns->cnt - 1) % tns->cols, *tns->sel % tns->cols);
-			*tns->sel = MIN(*tns->sel + (cnt+3) * tns->cols, max);
-			break;
 		case DIR_LEFT:
 			*tns->sel = MAX(*tns->sel - cnt, 0);
 			break;
-		case DIR_LEFT3:
-			*tns->sel = MAX(*tns->sel - (cnt+3), 0);
-			break;
 		case DIR_RIGHT:
 			*tns->sel = MIN(*tns->sel + cnt, *tns->cnt - 1);
-			break;
-		case DIR_RIGHT3:
-			*tns->sel = MIN(*tns->sel + (cnt+3), *tns->cnt - 1);
 			break;
 	}
 

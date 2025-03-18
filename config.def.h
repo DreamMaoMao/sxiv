@@ -93,16 +93,12 @@ static const keymap_t keys[] = {
 
 	{ 0,            XK_h,             t_move_sel,           DIR_LEFT },
 	{ 0,            XK_Left,          t_move_sel,           DIR_LEFT },
-	{ 0,            XK_H,             t_move_sel,           DIR_LEFT3 },
 	{ 0,            XK_j,             t_move_sel,           DIR_DOWN },
 	{ 0,            XK_Down,          t_move_sel,           DIR_DOWN },
-	{ 0,            XK_J,             t_move_sel,           DIR_DOWN3 },
 	{ 0,            XK_k,             t_move_sel,           DIR_UP },
 	{ 0,            XK_Up,            t_move_sel,           DIR_UP },
-	{ 0,            XK_K,             t_move_sel,           DIR_UP3 },
 	{ 0,            XK_l,             t_move_sel,           DIR_RIGHT },
 	{ 0,            XK_Right,         t_move_sel,           DIR_RIGHT },
-	{ 0,            XK_L,             t_move_sel,           DIR_RIGHT3 },
 	{ 0,            XK_R,             t_reload_all,         None },
 
 	{ 0,            XK_n,             i_navigate,           -1 },
