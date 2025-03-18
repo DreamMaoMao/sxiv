@@ -525,16 +525,20 @@ void tns_draw_easymotion_label(tns_t *tns, int n)
 		tns->use_label_count++;
 
 		XSetForeground(e->dpy, gc, win->bg.pixel);
-		XFillRectangle(e->dpy, win->buf.pm, gc, x-tw/2, y-1.2*tw, tw*2, tw*2);
+		XFillRectangle(e->dpy, win->buf.pm, gc, x-5, y-25, tw+10, tw+10);
+		win_draw_rect(win, x - 7, y-25, tw+12, 2, true, 1, win->lb.pixel);
+		win_draw_rect(win, x - 7, y-25 + tw+10, tw+12, 2, true, 1, win->lb.pixel);
+		win_draw_rect(win, x - 7, y-25, 2, tw+10, true, 1, win->lb.pixel);
+		win_draw_rect(win, x - 7 + tw + 10, y-25, 2, tw+10, true, 1, win->lb.pixel);
 
 		char text1[] = {label[0], '\0'};
 		char text2[] = {label[1], '\0'};
 		if(tns->easymotion_first_keysym && XKeysymToString(tns->easymotion_first_keysym)[0] == label[0]) {
 			win_draw_text(win, d, &win->hl, x, y, text1, len/2, tw/2);
 		} else {
-			win_draw_text(win, d, &win->fg, x, y, text1, len/2, tw/2);
+			win_draw_text(win, d, &win->lb, x, y, text1, len/2, tw/2);
 		}
-		win_draw_text(win, d, &win->fg, x+tw/2, y, text2, len/2, tw/2);
+		win_draw_text(win, d, &win->lb, x+tw/2, y, text2, len/2, tw/2);
 	}
 }
 
