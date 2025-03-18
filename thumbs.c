@@ -513,7 +513,7 @@ void tns_draw_easymotion_label(tns_t *tns, int n)
 		int len, tw;
 		e = &win->env;
 
-		if(t->y < win->y || t->y > win->y + win->h)
+		if(t->y + t->h < win->y || t->y > win->y + win->h)
 			return;
 		d = XftDrawCreate(e->dpy, win->buf.pm, DefaultVisual(e->dpy, e->scr),
 						  DefaultColormap(e->dpy, e->scr));
