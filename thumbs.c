@@ -509,35 +509,44 @@ void tns_draw_easymotion_label(tns_t *tns, int n)
 		XftDraw *d;
 		win_env_t *e;
 		char *label = easymotion_label[tns->use_label_count];
-		int len, tw;
+		int len1,len2, tw1,tw2;
 		e = &win->env;
 
 		if(t->y  < 0 || t->y > win->h)
 			return;
 		d = XftDrawCreate(e->dpy, win->buf.pm, DefaultVisual(e->dpy, e->scr),
 						  DefaultColormap(e->dpy, e->scr));
-		len = strlen(label);
-		tw = TEXTWIDTH(win, label, len);
-		int x = t->x+t->w/2 - tw/2, y = t->y + t->h/2;
+
+		char text1[] = {label[0], '\0'};
+		char text2[] = {label[1], '\0'};	
+		len1 = strlen(text1);
+		len2 = strlen(text2);
+		tw1 = TEXTWIDTH(win, text1, len1);
+		tw2 = TEXTWIDTH(win, text2, len2);
+
+
+		int x = t->x +  t->w/2 - tw1/2 - tw2/2;
+		int y = t->y + t->h/2;
 
 		t->easymotion_label = easymotion_label[tns->use_label_count];
 		tns->use_label_count++;
 
 		XSetForeground(e->dpy, gc, win->bg.pixel);
-		XFillRectangle(e->dpy, win->buf.pm, gc, x-5, y-25, tw+10, tw+10);
-		win_draw_rect(win, x - 7, y-25, tw+12, 2, true, 1, win->lb.pixel);
-		win_draw_rect(win, x - 7, y-25 + tw+10, tw+12, 2, true, 1, win->lb.pixel);
-		win_draw_rect(win, x - 7, y-25, 2, tw+10, true, 1, win->lb.pixel);
-		win_draw_rect(win, x - 7 + tw + 10, y-25, 2, tw+10, true, 1, win->lb.pixel);
+		XFillRectangle(e->dpy, win->buf.pm, gc, x-5, y-(tw1+tw2), tw1+tw2+10, tw1+tw2+10);
 
-		char text1[] = {label[0], '\0'};
-		char text2[] = {label[1], '\0'};
+		win_draw_rect(win, x - 7, y-(tw1+tw2), tw1+tw2+12, 2, true, 1, win->lb.pixel);
+		win_draw_rect(win, x - 7, y-(tw1+tw2) + tw1+tw2+10, tw1+tw2+12, 2, true, 1, win->lb.pixel);
+		win_draw_rect(win, x - 7, y-(tw1+tw2), 2, tw1+tw2+10, true, 1, win->lb.pixel);
+		win_draw_rect(win, x - 7 + tw1+tw2 + 10, y-(tw1+tw2), 2, tw1+tw2+10, true, 1, win->lb.pixel);
+
+
+
 		if(tns->easymotion_first_keysym && XKeysymToString(tns->easymotion_first_keysym)[0] == label[0]) {
-			win_draw_text(win, d, &win->hl, x, y, text1, len/2, tw/2);
+			win_draw_text(win, d, &win->hl, x, y, text1, len1, tw1);
 		} else {
-			win_draw_text(win, d, &win->lb, x, y, text1, len/2, tw/2);
+			win_draw_text(win, d, &win->lb, x, y, text1, len1, tw1);
 		}
-		win_draw_text(win, d, &win->lb, x+tw/2, y, text2, len/2, tw/2);
+		win_draw_text(win, d, &win->lb, x+tw1, y, text2, len2, tw2);
 	}
 }
 
